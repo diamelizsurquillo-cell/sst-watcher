@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { KpiCard } from "./KpiCard";
 import { TrendingUp, AlertOctagon, Clock4, Repeat2 } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ComposedChart, Line, Bar } from "recharts";
+import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function TabTendencias({ data }: { data: Observacion[] }) {
   const stats = useMemo(() => {
