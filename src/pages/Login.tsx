@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Shield, Lock, User, Eye, EyeOff, HardHat } from "lucide-react";
+import { Shield, Lock, User, Eye, EyeOff, HardHat, Copy, Check } from "lucide-react";
+
+const DEMO_USER = "administrador";
+const DEMO_PASS = "CanalEjecutivo";
 
 export default function Login() {
   const { login } = useAuth();
@@ -14,6 +17,7 @@ export default function Login() {
   const [p, setP] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [copied, setCopied] = useState<"user" | "pass" | null>(null);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,11 +34,17 @@ export default function Login() {
     }, 500);
   };
 
-  const fill = () => { setU("administrador"); setP("CanalEjecutivo"); };
+  const fill = () => { setU(DEMO_USER); setP(DEMO_PASS); };
+
+  const copy = (val: string, which: "user" | "pass") => {
+    navigator.clipboard.writeText(val);
+    setCopied(which);
+    toast.success("Copiado al portapapeles");
+    setTimeout(() => setCopied(null), 1500);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 gradient-hero relative overflow-hidden">
-      {/* Decorative grid */}
       <div className="absolute inset-0 opacity-[0.07]" style={{
         backgroundImage: "linear-gradient(hsl(var(--primary-foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary-foreground)) 1px, transparent 1px)",
         backgroundSize: "60px 60px"
@@ -54,6 +64,36 @@ export default function Login() {
           <div className="flex items-center gap-2 mb-6">
             <Shield className="w-5 h-5 text-accent" />
             <h2 className="font-display font-semibold text-foreground">Acceso seguro</h2>
+          </div>
+
+          {/* Demo credentials block */}
+          <div className="mb-6 p-4 rounded-xl border border-accent/30 bg-accent/5">
+            <p className="text-xs font-semibold uppercase tracking-wider text-accent mb-3 flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5" /> Credenciales demo
+            </p>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-background/60 border border-border/60">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase text-muted-foreground tracking-wider">Usuario</p>
+                  <p className="font-mono text-sm font-semibold truncate">{DEMO_USER}</p>
+                </div>
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => copy(DEMO_USER, "user")} title="Copiar usuario">
+                  {copied === "user" ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+                </Button>
+              </div>
+              <div className="flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-background/60 border border-border/60">
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase text-muted-foreground tracking-wider">Contraseña</p>
+                  <p className="font-mono text-sm font-semibold truncate">{DEMO_PASS}</p>
+                </div>
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => copy(DEMO_PASS, "pass")} title="Copiar contraseña">
+                  {copied === "pass" ? <Check className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
+            <button type="button" onClick={fill} className="w-full mt-3 text-xs text-accent hover:underline font-medium">
+              Autocompletar formulario →
+            </button>
           </div>
 
           <form onSubmit={submit} className="space-y-5">
@@ -79,15 +119,11 @@ export default function Login() {
             <Button type="submit" disabled={loading} className="w-full h-11 gradient-accent text-accent-foreground font-semibold hover:opacity-90 transition-smooth shadow-md">
               {loading ? "Verificando..." : "Iniciar sesión"}
             </Button>
-
-            <button type="button" onClick={fill} className="w-full text-xs text-muted-foreground hover:text-accent transition-smooth">
-              Usar credenciales demo →
-            </button>
           </form>
         </div>
 
         <p className="text-center text-xs text-primary-foreground/50 mt-6">
-          Demo: <span className="font-mono">administrador</span> / <span className="font-mono">CanalEjecutivo</span>
+          Cuenta demo · Solo lectura
         </p>
       </div>
     </div>
