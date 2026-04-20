@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { Observacion } from "@/lib/mockData";
 import { Card } from "@/components/ui/card";
 import { KpiCard } from "./KpiCard";
-import { TrendingUp, AlertOctagon, Clock4, Repeat2 } from "lucide-react";
+import { TrendingUp, AlertOctagon, Clock4, Repeat2, Info } from "lucide-react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ComposedChart, Line, Bar } from "recharts";
-import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function TabTendencias({ data }: { data: Observacion[] }) {
   const stats = useMemo(() => {
@@ -50,7 +50,19 @@ export function TabTendencias({ data }: { data: Observacion[] }) {
       </div>
 
       <Card className="p-5 gradient-card">
-        <h3 className="font-display font-semibold mb-4">Densidad por hora del día</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="font-display font-semibold">Densidad por hora del día</h3>
+          <TooltipProvider>
+            <UITooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[250px] text-center">
+                <p>Distribución horaria del registro de observaciones para identificar las horas pico de riesgo.</p>
+              </TooltipContent>
+            </UITooltip>
+          </TooltipProvider>
+        </div>
         <ResponsiveContainer width="100%" height={240}>
           <AreaChart data={stats.horas}>
             <defs>
@@ -69,7 +81,19 @@ export function TabTendencias({ data }: { data: Observacion[] }) {
       </Card>
 
       <Card className="p-5 gradient-card">
-        <h3 className="font-display font-semibold mb-4">Gráfico de control (límite superior)</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="font-display font-semibold">Gráfico de control (límite superior)</h3>
+          <TooltipProvider>
+            <UITooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[250px] text-center">
+                <p>Monitoriza la cantidad diaria de observaciones frente al Límite Superior de Control (LSC) estadístico.</p>
+              </TooltipContent>
+            </UITooltip>
+          </TooltipProvider>
+        </div>
         <ResponsiveContainer width="100%" height={280}>
           <ComposedChart data={stats.dailyWithLimits}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -85,9 +109,21 @@ export function TabTendencias({ data }: { data: Observacion[] }) {
 
       {stats.alertas.length > 0 && (
         <Card className="p-5 border-critical/40 bg-critical/5">
-          <h3 className="font-display font-semibold mb-4 flex items-center gap-2 text-critical">
-            <AlertOctagon className="w-5 h-5 animate-pulse" /> Alertas automáticas — superación de LSC
-          </h3>
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="font-display font-semibold flex items-center gap-2 text-critical">
+              <AlertOctagon className="w-5 h-5 animate-pulse" /> Alertas automáticas — superación de LSC
+            </h3>
+            <TooltipProvider>
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-critical/60 hover:text-critical transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center">
+                  <p>Días en los que el número de observaciones superó el límite estadístico normal, requiriendo revisión urgente.</p>
+                </TooltipContent>
+              </UITooltip>
+            </TooltipProvider>
+          </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {stats.alertas.map((a) => (
               <UITooltip key={a.fecha}>

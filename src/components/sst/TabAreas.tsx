@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import { Observacion } from "@/lib/mockData";
 import { Card } from "@/components/ui/card";
 import { KpiCard } from "./KpiCard";
-import { Building2, Repeat, UserCog, MapPin } from "lucide-react";
+import { Building2, Repeat, UserCog, MapPin, Info } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function TabAreas({ data }: { data: Observacion[] }) {
   const stats = useMemo(() => {
@@ -49,7 +49,19 @@ export function TabAreas({ data }: { data: Observacion[] }) {
       </div>
 
       <Card className="p-5 gradient-card">
-        <h3 className="font-display font-semibold mb-4">Observaciones por área (apiladas por tipo)</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="font-display font-semibold">Observaciones por área (apiladas por tipo)</h3>
+          <TooltipProvider>
+            <UITooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[250px] text-center">
+                <p>Muestra la cantidad de observaciones agrupadas por área y desglosadas por el tipo de hallazgo.</p>
+              </TooltipContent>
+            </UITooltip>
+          </TooltipProvider>
+        </div>
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={stats.porArea}>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -67,7 +79,19 @@ export function TabAreas({ data }: { data: Observacion[] }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-5 gradient-card">
-          <h3 className="font-display font-semibold mb-4">Mapa de calor — zonas críticas</h3>
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="font-display font-semibold">Mapa de calor — zonas críticas</h3>
+            <TooltipProvider>
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center">
+                  <p>Destaca las zonas con mayor concentración de observaciones críticas y altas respecto a su total.</p>
+                </TooltipContent>
+              </UITooltip>
+            </TooltipProvider>
+          </div>
           <div className="grid grid-cols-3 gap-2">
             {stats.heatZonas.map((z) => {
               const intensity = Math.min(z.ratio, 1);
@@ -98,7 +122,19 @@ export function TabAreas({ data }: { data: Observacion[] }) {
         </Card>
 
         <Card className="p-5 gradient-card">
-          <h3 className="font-display font-semibold mb-4">Semáforo por área</h3>
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="font-display font-semibold">Semáforo por área</h3>
+            <TooltipProvider>
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center">
+                  <p>Clasifica el nivel de riesgo de cada área según el volumen total de observaciones reportadas.</p>
+                </TooltipContent>
+              </UITooltip>
+            </TooltipProvider>
+          </div>
           <div className="space-y-2 max-h-[320px] overflow-auto scrollbar-thin pr-2">
             {stats.porArea.map((row) => {
               const tone = row.total > 50 ? "critical" : row.total > 25 ? "warning" : "success";

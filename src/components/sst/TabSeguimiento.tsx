@@ -2,9 +2,9 @@ import { useMemo } from "react";
 import { Observacion } from "@/lib/mockData";
 import { Card } from "@/components/ui/card";
 import { KpiCard } from "./KpiCard";
-import { Clock, AlertCircle, ShieldCheck, Timer } from "lucide-react";
+import { Clock, AlertCircle, ShieldCheck, Timer, Info } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
-import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider, Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { format } from "date-fns";
 
 export function TabSeguimiento({ data }: { data: Observacion[] }) {
@@ -52,7 +52,19 @@ export function TabSeguimiento({ data }: { data: Observacion[] }) {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-5 gradient-card">
-          <h3 className="font-display font-semibold mb-4">Estado de acciones</h3>
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="font-display font-semibold">Estado de acciones</h3>
+            <TooltipProvider>
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center">
+                  <p>Muestra el estado actual de todas las observaciones registradas (Abiertas, En proceso, Cerradas).</p>
+                </TooltipContent>
+              </UITooltip>
+            </TooltipProvider>
+          </div>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={stats.estadoData} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -67,7 +79,19 @@ export function TabSeguimiento({ data }: { data: Observacion[] }) {
         </Card>
 
         <Card className="p-5 gradient-card">
-          <h3 className="font-display font-semibold mb-4">Días de cierre por tipo (min · prom · max)</h3>
+          <div className="flex items-center gap-2 mb-4">
+            <h3 className="font-display font-semibold">Días de cierre por tipo (min · prom · max)</h3>
+            <TooltipProvider>
+              <UITooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-center">
+                  <p>Mínimo, promedio y máximo de días tomados para cerrar observaciones, agrupados por tipo.</p>
+                </TooltipContent>
+              </UITooltip>
+            </TooltipProvider>
+          </div>
           <div className="space-y-4 mt-4">
             {stats.cierrePorTipo.map((t) => (
               <UITooltip key={t.tipo}>
@@ -99,7 +123,19 @@ export function TabSeguimiento({ data }: { data: Observacion[] }) {
       </div>
 
       <Card className="p-5 gradient-card">
-        <h3 className="font-display font-semibold mb-4">Acciones recientes (Gantt simplificado)</h3>
+        <div className="flex items-center gap-2 mb-4">
+          <h3 className="font-display font-semibold">Acciones recientes (Gantt simplificado)</h3>
+          <TooltipProvider>
+            <UITooltip>
+              <TooltipTrigger asChild>
+                <Info className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors cursor-help" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[250px] text-center">
+                <p>Cronología simplificada de las observaciones más recientes, mostrando sus días activos para cierre.</p>
+              </TooltipContent>
+            </UITooltip>
+          </TooltipProvider>
+        </div>
         <div className="space-y-2">
           {stats.recientes.map((o) => {
             const w = Math.min(100, (o.diasParaCierre / 45) * 100);
