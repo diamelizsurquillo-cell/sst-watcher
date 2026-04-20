@@ -5,6 +5,7 @@ import { KpiCard } from "./KpiCard";
 import { Building2, Repeat, UserCog, MapPin } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function TabAreas({ data }: { data: Observacion[] }) {
   const stats = useMemo(() => {
@@ -71,16 +72,26 @@ export function TabAreas({ data }: { data: Observacion[] }) {
             {stats.heatZonas.map((z) => {
               const intensity = Math.min(z.ratio, 1);
               return (
-                <div
-                  key={z.zona}
-                  className="rounded-lg p-4 text-center transition-smooth hover:scale-105 cursor-default border border-border/50"
-                  style={{ background: `hsl(var(--critical) / ${0.1 + intensity * 0.55})` }}
-                  title={`${z.zona} • ${z.criticas}/${z.total} críticas`}
-                >
-                  <div className="font-display font-bold text-lg">{z.zona}</div>
-                  <div className="text-xs opacity-80">{z.criticas} críticas</div>
-                  <div className="text-[10px] mt-1 opacity-70">{z.total} obs</div>
-                </div>
+                <UITooltip key={z.zona}>
+                  <TooltipTrigger asChild>
+                    <div
+                      className="rounded-lg p-4 text-center transition-smooth hover:scale-105 cursor-pointer border border-border/50"
+                      style={{ background: `hsl(var(--critical) / ${0.1 + intensity * 0.55})` }}
+                    >
+                      <div className="font-display font-bold text-lg">{z.zona}</div>
+                      <div className="text-xs opacity-80">{z.criticas} críticas</div>
+                      <div className="text-[10px] mt-1 opacity-70">{z.total} obs</div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="text-xs space-y-0.5">
+                      <p className="font-semibold">Zona {z.zona}</p>
+                      <p>Total observaciones: <span className="font-mono">{z.total}</span></p>
+                      <p>Críticas / Altas: <span className="font-mono">{z.criticas}</span></p>
+                      <p>Ratio criticidad: <span className="font-mono">{Math.round(z.ratio * 100)}%</span></p>
+                    </div>
+                  </TooltipContent>
+                </UITooltip>
               );
             })}
           </div>
@@ -91,14 +102,27 @@ export function TabAreas({ data }: { data: Observacion[] }) {
           <div className="space-y-2 max-h-[320px] overflow-auto scrollbar-thin pr-2">
             {stats.porArea.map((row) => {
               const tone = row.total > 50 ? "critical" : row.total > 25 ? "warning" : "success";
+              const label = tone === "critical" ? "Crítica" : tone === "warning" ? "Atención" : "Estable";
               return (
-                <div key={row.area} className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted transition-smooth">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-2.5 h-2.5 rounded-full bg-${tone}`} />
-                    <span className="font-medium text-sm">{row.area}</span>
-                  </div>
-                  <Badge variant="outline" className="font-mono">{row.total}</Badge>
-                </div>
+                <UITooltip key={row.area}>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-muted/40 hover:bg-muted transition-smooth cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-2.5 h-2.5 rounded-full bg-${tone}`} />
+                        <span className="font-medium text-sm">{row.area}</span>
+                      </div>
+                      <Badge variant="outline" className="font-mono">{row.total}</Badge>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="text-xs space-y-0.5">
+                      <p className="font-semibold">{row.area} — {label}</p>
+                      <p>Total: <span className="font-mono">{row.total}</span></p>
+                      <p>Conducta: {row.Conducta} · Condición: {row["Condición"]}</p>
+                      <p>EPP: {row.EPP} · Procedimiento: {row.Procedimiento}</p>
+                    </div>
+                  </TooltipContent>
+                </UITooltip>
               );
             })}
           </div>
