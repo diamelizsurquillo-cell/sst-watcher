@@ -90,10 +90,23 @@ export function TabTendencias({ data }: { data: Observacion[] }) {
           </h3>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {stats.alertas.map((a) => (
-              <div key={a.fecha} className="p-3 rounded-lg bg-critical/10 border border-critical/30 flex justify-between items-center">
-                <span className="font-medium text-sm">📅 {a.fecha}</span>
-                <span className="font-mono text-critical font-bold">{a.count} obs</span>
-              </div>
+              <UITooltip key={a.fecha}>
+                <TooltipTrigger asChild>
+                  <div className="p-3 rounded-lg bg-critical/10 border border-critical/30 flex justify-between items-center cursor-pointer hover:bg-critical/20 transition-smooth">
+                    <span className="font-medium text-sm">📅 {a.fecha}</span>
+                    <span className="font-mono text-critical font-bold">{a.count} obs</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="text-xs space-y-0.5">
+                    <p className="font-semibold text-critical">No conformidad detectada</p>
+                    <p>Día: <span className="font-mono">{a.fecha}</span></p>
+                    <p>Observaciones: <span className="font-mono">{a.count}</span></p>
+                    <p>Límite superior: <span className="font-mono">{stats.ucl}</span></p>
+                    <p className="text-muted-foreground">Excede el control estadístico</p>
+                  </div>
+                </TooltipContent>
+              </UITooltip>
             ))}
           </div>
         </Card>
