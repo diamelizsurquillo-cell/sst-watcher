@@ -20,12 +20,11 @@ export default function Dashboard() {
   const { theme, toggle } = useTheme();
   const [filters, setFilters] = useState(initialFilters);
 
-  if (!user) return <Navigate to="/login" replace />;
-
   const data = useMemo(() => applyFilters(OBSERVACIONES, filters), [filters]);
-
   const areas = useMemo(() => Array.from(new Set(OBSERVACIONES.map((o) => o.area))).sort(), []);
   const responsables = useMemo(() => Array.from(new Set(OBSERVACIONES.map((o) => o.responsable))).sort(), []);
+
+  if (!user) return <Navigate to="/login" replace />;
 
   const exportCSV = () => {
     const headers = ["codigo", "fecha", "area", "zona", "tipo", "estado", "prioridad", "responsable", "turno", "descripcion"];
